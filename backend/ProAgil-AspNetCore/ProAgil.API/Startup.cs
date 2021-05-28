@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ProAgil.API.Data;
+using ProAgil.Repository;
 
 namespace ProAgil.API
 {
@@ -28,7 +28,8 @@ namespace ProAgil.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("ProAgilSqlConnection")));
+            services.AddScoped<IProAgilRepository, ProAgilRepository>();
+            services.AddDbContext<ProAgilContext>(x => x.UseSqlite(Configuration.GetConnectionString("ProAgilSqlConnection")));
             services.AddCors();
         }
 
@@ -47,6 +48,7 @@ namespace ProAgil.API
 
             //app.UseHttpsRedirection();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

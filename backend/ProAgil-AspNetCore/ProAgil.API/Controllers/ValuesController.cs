@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProAgil.API.Data;
-using ProAgil.API.Model;
+using ProAgil.Domain;
+using ProAgil.Repository;
 
 namespace ProAgil.API.Controllers
 {
@@ -14,8 +14,8 @@ namespace ProAgil.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-      private readonly DataContext _context;
-      public ValuesController(DataContext context)
+      private readonly ProAgilContext _context;
+      public ValuesController(ProAgilContext context)
       {
           _context = context;
       }
@@ -38,7 +38,7 @@ namespace ProAgil.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<Evento> Get(int id)
         {
-            return _context.Eventos.FirstOrDefault(p => p.EventoId == id);
+            return _context.Eventos.FirstOrDefault(p => p.Id == id);
         }
 
         // POST api/values
