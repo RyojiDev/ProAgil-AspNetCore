@@ -7,7 +7,7 @@ import { Evento } from '../_models/Evento';
   providedIn: 'root'
 })
 export class EventoService {
-  baseURL = 'http://localhost:5000/api/evento';
+  baseURL = 'http://192.168.0.105:5000/api/evento';
 
 constructor(private http: HttpClient) { }
 
@@ -25,6 +25,15 @@ getAllEventos(): Observable<Evento[]> {
 
  postEvento(evento: Evento){
    return this.http.post(this.baseURL, evento);
+ }
+
+ putEvento(evento: Evento){
+   debugger
+   return this.http.put(`${this.baseURL}/${evento.id}`, evento);
+ }
+
+ deleteEvento(id: number) {
+   return this.http.delete(`${this.baseURL}/${id}`);
  }
 }
 

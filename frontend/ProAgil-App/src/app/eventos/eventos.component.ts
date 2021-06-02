@@ -16,10 +16,13 @@ export class EventosComponent implements OnInit {
   eventosFiltrados: Evento[];
   evento: Evento;
   eventos: Evento[];
+
+  modoSalvar = '';
   imagemLargura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
   registerForm: FormGroup;
+  bodyDeletarEvento = '';
   _filtroLista: string = '';
   get filtroLista(){
     return this._filtroLista;
@@ -106,7 +109,9 @@ export class EventosComponent implements OnInit {
   }
 
   salvarAlteracao(template: any) {
-    if(this.registerForm.valid){
+    debugger
+  if(this.registerForm.valid) {
+    if(this.modoSalvar === 'post'){
       this.evento = Object.assign({}, this.registerForm.value);
       this.eventoService.postEvento(this.evento).subscribe(
         (novoEvento: Evento) => {
@@ -118,11 +123,49 @@ export class EventosComponent implements OnInit {
           console.log(error);
         }
       );
+    }else{
+      this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+    this.eventoService.putEvento(this.evento).subscribe(
+      () => {
+        template.hide();
+        this.getEventos();
+      },
+      error => {
+        console.log(error);
+      }
+    );
     }
+  }
+    
+}
+
+  novoEvento(template: any) {
+    this.modoSalvar = 'post';
+    this.openModal(template);
   }
 
   editarEvento(template:any, evento: Evento){
-    
+    this.modoSalvar = 'put';
+    this.openModal(template);
+    this.evento = evento;
+    this.registerForm.patchValue(evento);
+  }
+
+  excluirEvento(evento: Evento, template: any) {
+    this.openModal(template);
+    this.evento = evento;
+    this.bodyDeletarEvento = `Tem certeza que deseja excluir o Evento: ${evento.tema} de codigo ${evento.id}`;
+  }
+
+  confirmeDelete(template: any) {
+    this.eventoService.deleteEvento(this.evento.id).subscribe(
+      () => {
+        template.hide();
+        this.getEventos();
+      }, error => {
+        console.log(error);
+      }
+    )
   }
 
 }
